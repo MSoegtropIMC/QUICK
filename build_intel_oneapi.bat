@@ -12,10 +12,12 @@ cd build
 
 cmake .. -G Ninja -DCOMPILER=INTEL ^
     -DMPI=TRUE -DCUDA=TRUE -DQUICK_USER_ARCH=tesla -DMKL_STATIC=TRUE ^
-    -DOpenMP_CXX_FLAGS=-Qopenmp -DOpenMP_C_FLAGS=-Qopenmp -DOpenMP_Fortran_FLAGS=-Qopenmp ^
-    -DOpenMP_CXX_LIB_NAMES=libiomp5md -DOpenMP_C_LIB_NAMES=libiomp5md -DOpenMP_Fortran_LIB_NAMES=libiomp5md ^
-    -DOpenMP_CXX_LIBRARIES=libiomp5md -DOpenMP_C_LIBRARIES=libiomp5md -DOpenMP_Fortran_LIBRARIES=libiomp5md ^
-    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_07_OPENMPLIBS.log
+    -DOpenMP_MKL_EXTRA_LIBRARIES=libiomp5md ^
+    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_10_MKL_EXTRA.log
+
+REM    -DOpenMP_CXX_LIB_NAMES=libiomp5md -DOpenMP_C_LIB_NAMES=libiomp5md -DOpenMP_Fortran_LIB_NAMES=libiomp5md ^
+REM    -DOpenMP_CXX_LIB_NAMES=libiomp5md -DOpenMP_C_LIB_NAMES=libiomp5md -DOpenMP_Fortran_LIB_NAMES=libiomp5md ^
+
 
 REM ===== cmake debug options =====
 REM See https://cmake.org/cmake/help/latest/manual/cmake.1.html
@@ -27,9 +29,7 @@ REM - there doesn't seem to be a comman dline options required (except for the i
 REM - it seems to be required to explicitly link libiomp5md
 REM - See https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl/link-line-advisor.html
 REM
-REM QUICK cmake scripts don't use OpenMP_CXX_LIB_NAMES but OpenMP_CXX_LIBRARIES
-REM
-REM QUICK FindMKL doesn't even use OpenMP_CXX_LIBRARIES (fixed there)
+REM QUICK FindMKL doesn't use OpenMP_CXX_LIBRARIES for its MKL build tests (fixed there)
 
 REM CMAKE and intel https://www.scivision.dev/intel-compiler-cmake-make-load-libraries/
 
