@@ -99,7 +99,7 @@ endif()
 
 # names of subdirectories in the lib folder
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(MKL_ARCHITECTURES intel64 em64t)
+	set(MKL_ARCHITECTURES intel64_win intel64 em64t)
 else()
 	set(MKL_ARCHITECTURES ia32)
 endif()
@@ -284,6 +284,7 @@ set(MKL_FORTRAN_LIBRARIES ${LIB_LIST_PREFIX} mkl::core mkl::threading mkl::fortr
 cmake_policy(SET CMP0060 NEW)
 
 # Check that it works
+set(CMAKE_REQUIRED_LIBRARIES "${OpenMP_C_LIBRARIES}")
 try_link_library(MKL_WORKS
 	LANGUAGE C
 	FUNCTION sgemm
@@ -291,6 +292,7 @@ try_link_library(MKL_WORKS
 
 list(APPEND MKL_NEEDED_LIBNAMES MKL_WORKS)
 
+set(CMAKE_REQUIRED_LIBRARIES "${OpenMP_Fortran_LIBRARIES}")
 if(CMAKE_Fortran_COMPILER_LOADED)
 	try_link_library(MKL_FORTRAN_WORKS
 		LANGUAGE Fortran
