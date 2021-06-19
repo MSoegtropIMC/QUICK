@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <cuda.h>
 #include <cuda_runtime_api.h>
-#include "nvToolsExt.h"
+#include <nvtx3/nvToolsExt.h>
 #include "../octree/gpack_common.h"
 
 #if defined DEBUG || defined DEBUGTIME
@@ -209,14 +209,14 @@ static const int SM_2X_XCGRAD_THREADS_PER_BLOCK = MAX_POINTS_PER_CLUSTER;
 
 
 // Energy Scale
-static const QUICKDouble OSCALE                  = (QUICKDouble) 1E12;
-static const QUICKDouble ONEOVEROSCALE           = (QUICKDouble)1.0 / OSCALE;
-static const QUICKDouble ONEOVEROSCALESQUARED    = (QUICKDouble)1.0 / (OSCALE * OSCALE);
+#define OSCALE                  ((QUICKDouble) 1E12)
+#define ONEOVEROSCALE           ((QUICKDouble)1.0 / OSCALE)
+#define ONEOVEROSCALESQUARED    ((QUICKDouble)1.0 / (OSCALE * OSCALE))
 
 
-static const QUICKDouble GRADSCALE                  = (QUICKDouble)1E16;
-static const QUICKDouble ONEOVERGRADSCALE           = (QUICKDouble)1.0 / GRADSCALE;
-static const QUICKDouble ONEOVERGRADSCALESQUARED    = (QUICKDouble)1.0 / (GRADSCALE * GRADSCALE);
+#define GRADSCALE                  ((QUICKDouble)1E16)
+#define ONEOVERGRADSCALE           ((QUICKDouble)1.0 / GRADSCALE)
+#define ONEOVERGRADSCALESQUARED    ((QUICKDouble)1.0 / (GRADSCALE * GRADSCALE))
 
 // SM Version enum
 enum SM_VERSION
