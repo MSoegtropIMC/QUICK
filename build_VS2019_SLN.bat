@@ -1,5 +1,4 @@
-VERDICT: THIS DOES NOT WORK: nVidia NVCC cannot work with Intel C compiler
-See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#system-requirements 
+VERDICT: this does not work - SLN generator does not find fortran compiler
 
 REM Best called with
 REM CD D:\QuantumChemistry\Quick\QUICK
@@ -8,7 +7,8 @@ REM EXIT
 
 SET PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\bin\Ninja;C:\bin\CMake\bin
 
-call T:\Intel\setvars_no_vc.bat
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"
+call "T:\Intel\setvars_no_vc.bat"
 
 echo %PATH%
 
@@ -16,15 +16,20 @@ del /S /Q build
 mkdir build
 cd build
 
+SET CC=cl
+SET CXX=cl
+SET FC=ifort
 
-cmake .. -G Ninja -DCOMPILER=INTEL ^
-    -DMPI=TRUE -DCUDA=TRUE -DQUICK_USER_ARCH=turing -DMKL_STATIC=TRUE ^
+cmake .. -G "Visual Studio 16 2019" -A x64 ^
+    -DCOMPILER=MANUAL -DMPI=TRUE -DCUDA=TRUE -DQUICK_USER_ARCH=turing -DMKL_STATIC=TRUE ^
     -DOpenMP_MKL_EXTRA_LIBRARIES=libiomp5md ^
-    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_12_RESTARTING_AFTER_VCPKG.log
+    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_13_VS2019.log
 
 REM    -DOpenMP_CXX_LIB_NAMES=libiomp5md -DOpenMP_C_LIB_NAMES=libiomp5md -DOpenMP_Fortran_LIB_NAMES=libiomp5md ^
 REM    -DOpenMP_CXX_LIB_NAMES=libiomp5md -DOpenMP_C_LIB_NAMES=libiomp5md -DOpenMP_Fortran_LIB_NAMES=libiomp5md ^
 
+REM ===== cmake targets =====
+REM See https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
 
 REM ===== cmake debug options =====
 REM See https://cmake.org/cmake/help/latest/manual/cmake.1.html
