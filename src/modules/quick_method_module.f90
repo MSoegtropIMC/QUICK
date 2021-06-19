@@ -11,6 +11,8 @@ module quick_method_module
     use quick_constants_module
     use quick_input_parser_module  
 
+    !DEC$ ATTRIBUTES DLLEXPORT :: quick_method
+
     implicit none
 
     type quick_method_type

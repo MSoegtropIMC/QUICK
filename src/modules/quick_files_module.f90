@@ -26,6 +26,8 @@ module quick_files_module
 !  AUTHOR      : Yipu Miao
 !------------------------------------------------------------------------
 
+    !DEC$ ATTRIBUTES DLLEXPORT :: outFileName, iOutFile
+
     implicit none
 
     character(len=80) :: inFileName     = ''

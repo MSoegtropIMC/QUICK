@@ -21,6 +21,8 @@ module quick_mpi_module
 !  AUTHOR      : Yipu Miao
 !------------------------------------------------------------------------    
 
+    !DEC$ ATTRIBUTES DLLEXPORT :: master, bMPI
+
     integer :: mpierror
     integer :: mpirank
     integer :: myid

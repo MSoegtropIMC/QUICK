@@ -10,6 +10,8 @@
 #include "util.fh"
 
 module quick_timer_module
+    !DEC$ ATTRIBUTES DLLEXPORT :: timer_cumer, timer_begin, timer_end
+
     implicit none
 
     integer TIMER_SIZE,TIMER_CUMER_SIZE

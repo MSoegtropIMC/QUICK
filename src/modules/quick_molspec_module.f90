@@ -17,6 +17,8 @@
 ! molecule specification Module
 module quick_molspec_module
 
+    !DEC$ ATTRIBUTES DLLEXPORT :: quick_molspec
+
    implicit none
 
    type quick_molspec_type
