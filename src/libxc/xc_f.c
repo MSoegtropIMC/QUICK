@@ -5,12 +5,34 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include "config.h"
+
+static char *strdup(const char *s) {
+    size_t size = strlen(s) + 1;
+    char *p = malloc(size);
+    if (p != NULL) {
+        memcpy(p, s, size);
+    }
+    return p;
+}
+
+static char *strndup(const char *s, size_t n) {
+    char *p;
+    size_t n1;
+
+    for (n1 = 0; n1 < n && s[n1] != '\0'; n1++)
+        continue;
+    p = malloc(n + 1);
+    if (p != NULL) {
+        memcpy(p, s, n1);
+        p[n1] = '\0';
+    }
+    return p;
+}
 
 #ifdef HAVE_FORTRAN
 
@@ -484,7 +506,7 @@ void FC_FUNC(f90_gga_x_hjs_set_par, F90_GGA_X_HJS_SET_PAR)
   xc_gga_x_hjs_set_params((xc_func_type *)(*p), *omega);
 }
 
-void FC_FUNC(f90_gga_x_hjs_b88_v2_set_par, F90_GGA_X_HJS_SET_PAR)
+void FC_FUNC(f90_gga_x_hjs_b88_v2_set_par, F90_GGA_X_HJS_B88_V2_SET_PAR)
   (void **p, double *omega)
 {
   xc_gga_x_hjs_b88_v2_set_params((xc_func_type *)(*p), *omega);
