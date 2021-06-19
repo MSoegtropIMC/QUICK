@@ -22,10 +22,10 @@
 #include <cmath>
 #include <fstream>
 #include <time.h>
-
+#include <malloc.h>
 
 // initialize data structure for grid partitioning algorithm
-void gpack_initialize_(){
+void __stdcall GPACK_INITIALIZE(){
 
     gps = new gpack_type;
     gps->totalGPACKMemory = 0;
@@ -52,7 +52,7 @@ void gpack_initialize_(){
 }
 
 // finalize data structure of grid partitioning algorithm
-void gpack_finalize_(){
+void __stdcall GPACK_FINALIZE(){
 
     delete gps->sigrad2;
     delete gps->ncontract;
@@ -101,7 +101,7 @@ void gpack_finalize_(){
 
 #if defined CUDA || defined CUDA_MPIV
 // loads packed grid information into f90 data structures
-void get_gpu_grid_info_(double *gridx, double *gridy, double *gridz, double *ssw, double *weight, int *atm, int *bin_locator, int *basf, int *primf, int *basf_counter, int *primf_counter,int *bin_counter){
+void __stdcall GET_GPU_GRID_INFO(double *gridx, double *gridy, double *gridz, double *ssw, double *weight, int *atm, int *bin_locator, int *basf, int *primf, int *basf_counter, int *primf_counter,int *bin_counter){
 
 	gps->gridxb->Transfer(gridx);
 	gps->gridyb->Transfer(gridy);
@@ -119,7 +119,7 @@ void get_gpu_grid_info_(double *gridx, double *gridy, double *gridz, double *ssw
 }
 #else
 // loads packed grid information into f90 data structures
-void get_cpu_grid_info_(double *gridx, double *gridy, double *gridz, double *ssw, double *weight, int *atm, int *basf, int *primf, int *basf_counter, int *primf_counter, int *bin_counter){
+void __stdcall GET_CPU_GRID_INFO(double *gridx, double *gridy, double *gridz, double *ssw, double *weight, int *atm, int *basf, int *primf, int *basf_counter, int *primf_counter, int *bin_counter){
 
         gps->gridxb->Transfer(gridx);
         gps->gridyb->Transfer(gridy);
@@ -138,7 +138,7 @@ void get_cpu_grid_info_(double *gridx, double *gridy, double *gridz, double *ssw
 
 
 /*Fortran accessible method to pack grid points*/
-void gpack_pack_pts_(double *grid_ptx, double *grid_pty, double *grid_ptz, int *grid_atm, double *grid_sswt, double *grid_weight, int *arr_size, int *natoms, int *nbasis, int *maxcontract, double *DMCutoff, double *sigrad2, int *ncontract, double *aexp, double *dcoeff, int *ncenter, int *itype, double *xyz, int *ngpts, int *nbins, int *nbtotbf, int *nbtotpf, double *toct, double *tprscrn){
+void __stdcall GPACK_PACK_PTS(double *grid_ptx, double *grid_pty, double *grid_ptz, int *grid_atm, double *grid_sswt, double *grid_weight, int *arr_size, int *natoms, int *nbasis, int *maxcontract, double *DMCutoff, double *sigrad2, int *ncontract, double *aexp, double *dcoeff, int *ncenter, int *itype, double *xyz, int *ngpts, int *nbins, int *nbtotbf, int *nbtotpf, double *toct, double *tprscrn){
 
         gps->arr_size    = *arr_size;
         gps->natoms      = *natoms;
@@ -196,7 +196,7 @@ void write_vmd_grid(vector<node> octree, string filename){
 
         //Convert the string file name into char array
         unsigned int fnlength = filename.length() + 1;
-	char fname[fnlength];
+	char *fname = (char*) _alloca(sizeof(char) * (fnlength));
         for(int i=0; i<fnlength;i++){
                 fname[i] = filename[i];
         }
@@ -253,7 +253,7 @@ void write_xyz(vector<node> *octree, vector<point> *ptlst, bool isptlst, string 
 	ofstream txtOut;
 	//Convert the string file name into char array
 	unsigned int fnlength = filename.length() + 1;
-	char fname[fnlength];
+	char *fname = (char*) _alloca(sizeof(char) * (fnlength));
 	for(int i=0; i<fnlength;i++){
 		fname[i] = filename[i];
 	}
@@ -1309,7 +1309,7 @@ void setup_gpack_mpi_1(){
 
 
 void setup_gpack_mpi_2(unsigned int nbins, double *gridx, double *gridy, double *gridz, unsigned char *gpweight, unsigned char *tmp_gpweight, unsigned int *cfweight, unsigned int *tmp_cfweight, unsigned int *pfweight, unsigned int *tmp_pfweight, double *sswt, double *weight, int *iatm, unsigned int *bs_tracker){
-	unsigned int tmp_arr[mpisize];
+	unsigned int *tmp_arr = (unsigned int*) _alloca(sizeof(unsigned int) * (mpisize));
 	unsigned int *tmp_mpi_binlst;
 
 	tmp_mpi_binlst = (unsigned int*) malloc((mpisize+1)*sizeof(unsigned int));
