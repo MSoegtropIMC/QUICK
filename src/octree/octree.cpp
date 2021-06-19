@@ -118,7 +118,7 @@ void distribute_grid_pts(vector<point> *ptlst, node *n){
 		double *z = (double*) p.z;
 
 		/*Push grid point into new list if it is within bounds*/
-		if( (*x >= xmin) and (*x < xmax) and (*y >= ymin) and (*y < ymax) and (*z >= zmin) and (*z <zmax) ){
+		if( (*x >= xmin) && (*x < xmax) && (*y >= ymin) && (*y < ymax) && (*z >= zmin) && (*z <zmax) ){
 			nptlst.push_back(p);
 		}
 	}
