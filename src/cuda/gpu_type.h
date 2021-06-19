@@ -21,6 +21,11 @@
 #include <cuda.h>
 //#include <cuda_runtime_api.h>
 
+// Windows headers have annoying definitions (like rad3) in Windows Kits\10\Include\10.0.19041.0\um\dlgs.h
+#if defined(rad3)
+#undef rad3
+#endif
+
 /*
  ****************************************************************
  *  gpu type and buffer type
