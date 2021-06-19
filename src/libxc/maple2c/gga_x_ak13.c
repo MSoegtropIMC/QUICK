@@ -9,8 +9,8 @@
   Maple version     : Maple 2016 (X86 64 LINUX)   
   Maple source      : ../maple/gga_x_ak13.mpl   
   Type of functional: work_gga_x   
-*/   
-   
+*/
+
 #ifdef DEVICE   
 __device__ void xc_gga_x_ak13_enhance_kernel
   (const void *p,  xc_gga_work_x_t *r)   
@@ -23,6 +23,9 @@ void xc_gga_x_ak13_enhance
   double t11, t12, t16, t17, t18, t25, t26, t27;   
   double t29, t36, t39, t43, t46, t47, t48, t49;   
   double t50, t56, t60, t61, t69, t80;   
+  // See QUICK\src\libxc\gga_x_ak13.c
+  static const double B1 =  1.74959015598863046792081721182; /* 3*muGE/5 + 8 pi/15 */
+  static const double B2 = -1.62613336586517367779736042170; /* muGE - B1 */
    
    
   t1 = M_CBRT6;   
