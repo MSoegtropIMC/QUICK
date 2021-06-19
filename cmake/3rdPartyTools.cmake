@@ -224,7 +224,11 @@ if(NEED_mkl)
 	option(MKL_MULTI_THREADED "Whether to link MKL in OpenMP mode to parallelize singlethreaded calls to MKL functions" TRUE)
 	
 	set(MKL_STATIC FALSE)
-	find_package(MKL)
+	# find_package(MKL)
+	message(DEBUG "MSOEGTROP Finding BLAS, LAPACK BEGIN")
+	find_package(BLAS)
+	find_package(LAPACK)
+	message(DEBUG "MSOEGTROP Finding BLAS, LAPACK END")
 	
 	if(MKL_FOUND)
 		set_3rdparty(mkl EXTERNAL)
