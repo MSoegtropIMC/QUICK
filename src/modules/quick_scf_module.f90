@@ -160,7 +160,8 @@ contains
      use quick_gridpoints_module
      use quick_scf_operator_module, only: scf_operator
      use quick_oei_module, only: bCalc1e 
- 
+     use quick_c_interface
+
      implicit none
   
 #ifdef MPIV

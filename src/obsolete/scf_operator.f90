@@ -28,7 +28,8 @@ subroutine scf_operator(deltaO)
    use allmod
    use quick_scf_module
    use quick_cutoff_module, only: cshell_density_cutoff
-   use quick_cshell_eri_module, only: getCshellEri, getCshellEriEnergy 
+   use quick_cshell_eri_module, only: getCshellEri, getCshellEriEnergy
+   use quick_c_interface
 
    implicit none
 

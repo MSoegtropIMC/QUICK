@@ -9,6 +9,7 @@
 #include "util.fh"
 
 subroutine gpu_write_info(io, ierr)
+    use quick_c_interface
     implicit none
     ! io unit
     integer io
@@ -53,6 +54,8 @@ end subroutine gpu_write_info
 
 #ifdef CUDA_MPIV
 subroutine mgpu_write_info(io, gpu_dev_count, mgpu_ids, ierr)
+    use quick_c_interface
+
     implicit none
     ! io unit
     integer io
@@ -90,7 +93,7 @@ subroutine mgpu_write_info(io, gpu_dev_count, mgpu_ids, ierr)
     write(io,'(a)')         '|                                                            '
     write(io,'(a,i3,a)')      '|        --    MPI RANK ',rank,' --          '
     gpu_dev_id=mgpu_ids(rank+1)
-    call mgpu_get_device_info(gpu_dev_id,gpu_dev_mem,gpu_num_proc,gpu_core_freq,gpu_dev_name,name_len,majorv,minorv,ierr) 
+    call mgpu_get_device_info(gpu_dev_id,gpu_dev_mem,gpu_num_proc,gpu_core_freq,gpu_dev_name,name_len,majorv,minorv) 
 
     write(io,'(a,i8)')      '|   CUDA DEVICE IN USE          : ', gpu_dev_id
     write(io,'(a,a)')       '|   CUDA DEVICE NAME            : ', gpu_dev_name(1:name_len)

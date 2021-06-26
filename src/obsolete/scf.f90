@@ -58,6 +58,7 @@ subroutine electdiis(jscf,ierr)
    use allmod
    use quick_gridpoints_module
    use quick_scf_module
+   use quick_c_interface
 
    implicit none
 

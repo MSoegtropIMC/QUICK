@@ -24,6 +24,7 @@ subroutine gradient(ierr)
 !------------------------------------------------------------------
 
    use allmod
+   use quick_c_interface
    implicit double precision(a-h,o-z)
 
    integer, intent(inout) :: ierr
@@ -115,6 +116,7 @@ end subroutine gradient
 subroutine scf_gradient
    use allmod
    use quick_gradient_module
+   use quick_c_interface
    implicit double precision(a-h,o-z)
 
    integer II,JJ,KK,LL,NBI1,NBI2,NBJ1,NBJ2,NBK1,NBK2,NBL1,NBL2
@@ -605,6 +607,7 @@ subroutine get_electron_replusion_grad
    use allmod
    use quick_gradient_module
    use quick_cutoff_module, only: cshell_dnscreen
+   use quick_c_interface
    implicit double precision(a-h,o-z)
 
    integer II,JJ,KK,LL,NBI1,NBI2,NBJ1,NBJ2,NBK1,NBK2,NBL1,NBL2
@@ -744,6 +747,7 @@ subroutine get_xc_grad
    use quick_dft_module, only: b3lypf, b3lyp_e, becke, becke_e, lyp, lyp_e
    use xc_f90_types_m
    use xc_f90_lib_m
+   use quick_c_interface
    implicit double precision(a-h,o-z)
 
    integer II,JJ,KK,LL,NBI1,NBI2,NBJ1,NBJ2,NBK1,NBK2,NBL1,NBL2

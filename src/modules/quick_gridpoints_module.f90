@@ -148,6 +148,7 @@ module quick_gridpoints_module
     use quick_molspec_module
     use quick_basis_module
     use quick_timer_module
+    use quick_c_interface
 
     implicit double precision(a-h,o-z)
     type(quick_xc_grid_type) self

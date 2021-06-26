@@ -938,7 +938,8 @@ endif
         ! subroutine to upload method and libxc info in to gpu
 #if defined CUDA || defined CUDA_MPIV        
         subroutine upload_method(self, ierr)
-          
+          use quick_c_interface
+
           implicit none
           
           type(quick_method_type), intent(in) :: self
@@ -962,6 +963,7 @@ endif
         end subroutine upload_method
 
         subroutine delete_method(self,ierr)
+          use quick_c_interface
 
           implicit none
           type(quick_method_type), intent(in) :: self

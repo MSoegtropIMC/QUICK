@@ -37,6 +37,7 @@ contains
      use quick_cutoff_module, only: cshell_density_cutoff
      use quick_cshell_eri_module, only: getCshellEri, getCshellEriEnergy 
      use quick_oei_module, only:get1eEnergy,get1e
+     use quick_c_interface
   
      implicit none
   
@@ -265,6 +266,7 @@ contains
      use quick_dft_module, only: b3lypf, b3lyp_e, becke, becke_e, lyp, lyp_e
      use xc_f90_types_m
      use xc_f90_lib_m
+     use quick_c_interface
      implicit none
   
 #ifdef MPIV

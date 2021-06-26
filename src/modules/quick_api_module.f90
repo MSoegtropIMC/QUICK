@@ -180,6 +180,7 @@ subroutine set_quick_job(fqin, keywd, natoms, atomic_numbers, ierr)
   use quick_molspec_module, only : quick_molspec, alloc
   use quick_exception_module
   use quick_method_module
+  use quick_c_interface
 
 #ifdef MPIV
   use quick_mpi_module
@@ -465,6 +466,7 @@ subroutine run_quick(self,ierr)
   use quick_oshell_gradient_module, only: oshell_gradient
   use quick_optimizer_module, only: optimize
   use quick_sad_guess_module, only: getSadGuess
+  use quick_c_interface
 #ifdef MPIV
   use quick_mpi_module
 #endif
@@ -681,6 +683,7 @@ subroutine gpu_upload_molspecs(ierr)
 
   use quick_molspec_module, only : quick_molspec
   use quick_basis_module
+  use quick_c_interface
 
   implicit none
   integer, intent(inout) :: ierr
@@ -754,6 +757,7 @@ subroutine delete_quick_job(ierr)
   use quick_mpi_module
   use quick_exception_module
   use quick_method_module
+  use quick_c_interface
 
   implicit none
   integer, intent(out) :: ierr

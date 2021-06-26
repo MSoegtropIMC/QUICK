@@ -35,6 +35,7 @@
     use quick_oshell_gradient_module, only: oshell_gradient
     use quick_optimizer_module, only: optimize
     use quick_sad_guess_module, only: getSadGuess
+    use quick_c_interface
 
     implicit none
 

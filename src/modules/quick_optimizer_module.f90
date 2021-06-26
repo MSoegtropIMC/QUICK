@@ -35,6 +35,7 @@ contains
      use quick_cshell_gradient_module, only: scf_gradient
      use quick_oshell_gradient_module, only: uscf_gradient
      use quick_exception_module
+     use quick_c_interface
      implicit double precision(a-h,o-z)
 
      logical :: done,diagco

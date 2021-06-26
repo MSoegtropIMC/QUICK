@@ -174,6 +174,7 @@ subroutine fullx
    !   matrix X.  The first step is forming the overlap matrix (Smatrix).
    !
    use allmod
+   use quick_c_interface
    implicit none
 
    double precision :: SJI,sum, SJI_temp
@@ -235,7 +236,7 @@ subroutine fullx
 
 #if defined CUDA || defined CUDA_MPIV
 
-   call cuda_diag(quick_scratch%hold, quick_scratch%tmpx,quick_scratch%tmphold,&
+   call cuda_diag_idegenf(quick_scratch%hold, quick_scratch%tmpx,quick_scratch%tmphold,&
    quick_scratch%Sminhalf, quick_scratch%IDEGEN1, quick_scratch%hold2,quick_scratch%tmpco, quick_scratch%V, nbasis)
 #else
 
