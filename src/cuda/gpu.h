@@ -15,36 +15,42 @@
 #include "util.h"
 #include "xc_redistribute.h"
 
-// device initial and shutdown operation
-extern "C" void gpu_set_device_(int* gpu_dev_id, int* ierr);
-extern "C" void gpu_startup_(int* ierr);
-extern "C" void gpu_init_(int* ierr);
-extern "C" void gpu_shutdown_(int* ierr);
+#ifdef _MSC_VER
+#define EXPORT_C extern "C" __declspec(dllexport)
+#else
+#define EXPORT_C extern "C"
+#endif
 
-extern "C" void gpu_get_device_info_(int* gpu_dev_count, int* gpu_dev_id,int* gpu_dev_mem,
+// device initial and shutdown operation
+EXPORT_C void gpu_set_device_(int* gpu_dev_id, int* ierr);
+EXPORT_C void gpu_startup_(int* ierr);
+EXPORT_C void gpu_init_(int* ierr);
+EXPORT_C void gpu_shutdown_(int* ierr);
+
+EXPORT_C void gpu_get_device_info_(int* gpu_dev_count, int* gpu_dev_id,int* gpu_dev_mem,
                                      int* gpu_num_proc,double* gpu_core_freq,char* gpu_dev_name,int* name_len, int* majorv, int* minorv, int* ierr);
 
 
 // molecule, basis sets, and some other information
-extern "C" void gpu_upload_method_(int* quick_method, bool* is_oshell, double* hyb_coeff);
-extern "C" void gpu_upload_atom_and_chg_(int* atom, QUICKDouble* atom_chg);
-extern "C" void gpu_upload_cutoff_(QUICKDouble* cutMatrix, QUICKDouble* integralCutoff,QUICKDouble* primLimit, QUICKDouble* DMCutoff);
-extern "C" void gpu_upload_cutoff_matrix_(QUICKDouble* YCutoff,QUICKDouble* cutPrim);
-extern "C" void gpu_upload_energy_(QUICKDouble* E);
-extern "C" void gpu_upload_calculated_(QUICKDouble* o, QUICKDouble* co, QUICKDouble* vec, QUICKDouble* dense);
-extern "C" void gpu_upload_calculated_beta_(QUICKDouble* ob, QUICKDouble* denseb);
-extern "C" void gpu_upload_basis_(int* nshell, int* nprim, int* jshell, int* jbasis, int* maxcontract, \
+EXPORT_C void gpu_upload_method_(int* quick_method, bool* is_oshell, double* hyb_coeff);
+EXPORT_C void gpu_upload_atom_and_chg_(int* atom, QUICKDouble* atom_chg);
+EXPORT_C void gpu_upload_cutoff_(QUICKDouble* cutMatrix, QUICKDouble* integralCutoff,QUICKDouble* primLimit, QUICKDouble* DMCutoff);
+EXPORT_C void gpu_upload_cutoff_matrix_(QUICKDouble* YCutoff,QUICKDouble* cutPrim);
+EXPORT_C void gpu_upload_energy_(QUICKDouble* E);
+EXPORT_C void gpu_upload_calculated_(QUICKDouble* o, QUICKDouble* co, QUICKDouble* vec, QUICKDouble* dense);
+EXPORT_C void gpu_upload_calculated_beta_(QUICKDouble* ob, QUICKDouble* denseb);
+EXPORT_C void gpu_upload_basis_(int* nshell, int* nprim, int* jshell, int* jbasis, int* maxcontract, \
                                   int* ncontract, int* itype,     QUICKDouble* aexp,      QUICKDouble* dcoeff,\
                                   int* first_basis_function, int* last_basis_function, int* first_shell_basis_function, int* last_shell_basis_function, \
                                   int* ncenter,   int* kstart,    int* katom,     int* ktype,     int* kprim,  int* kshell, int* Ksumtype, \
                                   int* Qnumber,   int* Qstart,    int* Qfinal,    int* Qsbasis,   int* Qfbasis,\
                                   QUICKDouble* gccoeff,           QUICKDouble* cons,      QUICKDouble* gcexpo, int* KLMN);
-extern "C" void gpu_upload_grad_(QUICKDouble* gradCutoff);
-extern "C" void gpu_cleanup_();
+EXPORT_C void gpu_upload_grad_(QUICKDouble* gradCutoff);
+EXPORT_C void gpu_cleanup_();
 
 //Following methods weddre added by Madu Manathunga
-extern "C" void gpu_upload_density_matrix_(QUICKDouble* dense);
-extern "C" void gpu_delete_dft_grid_();
+EXPORT_C void gpu_upload_density_matrix_(QUICKDouble* dense);
+EXPORT_C void gpu_delete_dft_grid();
 //void upload_xc_smem();
 void upload_pteval();
 void reupload_pteval();
@@ -54,17 +60,17 @@ void delete_pteval(bool devOnly);
 //                            [gpu_get2e]    ->      [get2e]         -> [get2e_kernel]  ->   [iclass]
 
 // c interface [gpu_get2e]
-extern "C" void get1e_();
-extern "C" void get_oneen_grad_();
-extern "C" void gpu_get_cshell_eri_(QUICKDouble* o);
-extern "C" void gpu_get_oshell_eri_(QUICKDouble* o, QUICKDouble* ob);
-extern "C" void gpu_get_cshell_xc_(QUICKDouble* Eelxc, QUICKDouble* aelec, QUICKDouble* belec, QUICKDouble *o);
-extern "C" void gpu_get_oshell_xc_(QUICKDouble* Eelxc, QUICKDouble* aelec, QUICKDouble* belec, QUICKDouble *o, QUICKDouble *ob);
-extern "C" void gpu_get_oshell_eri_grad_(QUICKDouble* grad);
-extern "C" void gpu_get_cshell_eri_grad_(QUICKDouble* grad);
-extern "C" void gpu_get_oshell_xcgrad_(QUICKDouble *grad);
-extern "C" void gpu_get_cshell_xcgrad_(QUICKDouble *grad);
-extern "C" void gpu_aoint_(QUICKDouble* leastIntegralCutoff, QUICKDouble* maxIntegralCutoff, int* intNum, char* intFileName);
+EXPORT_C void get1e_();
+EXPORT_C void get_oneen_grad_();
+EXPORT_C void gpu_get_cshell_eri_(QUICKDouble* o);
+EXPORT_C void gpu_get_oshell_eri_(QUICKDouble* o, QUICKDouble* ob);
+EXPORT_C void gpu_get_cshell_xc_(QUICKDouble* Eelxc, QUICKDouble* aelec, QUICKDouble* belec, QUICKDouble *o);
+EXPORT_C void gpu_get_oshell_xc_(QUICKDouble* Eelxc, QUICKDouble* aelec, QUICKDouble* belec, QUICKDouble *o, QUICKDouble *ob);
+EXPORT_C void gpu_get_oshell_eri_grad_(QUICKDouble* grad);
+EXPORT_C void gpu_get_cshell_eri_grad_(QUICKDouble* grad);
+EXPORT_C void gpu_get_oshell_xcgrad_(QUICKDouble *grad);
+EXPORT_C void gpu_get_cshell_xcgrad_(QUICKDouble *grad);
+EXPORT_C void gpu_aoint_(QUICKDouble* leastIntegralCutoff, QUICKDouble* maxIntegralCutoff, int* intNum, char* intFileName);
 
 // kernel interface [get2e]
 void get2e(_gpu_type gpu);

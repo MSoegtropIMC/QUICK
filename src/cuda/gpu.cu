@@ -26,7 +26,7 @@
 //-----------------------------------------------
 // Set up specified device and be ready to ignite
 //-----------------------------------------------
-extern "C" void gpu_set_device_(int* gpu_dev_id, int* ierr)
+EXPORT_C void gpu_set_device_(int* gpu_dev_id, int* ierr)
 {
     gpu->gpu_dev_id = *gpu_dev_id;
 #ifdef DEBUG
@@ -37,7 +37,7 @@ extern "C" void gpu_set_device_(int* gpu_dev_id, int* ierr)
 //-----------------------------------------------
 // create gpu class
 //-----------------------------------------------
-extern "C" void gpu_startup_(int* ierr)
+EXPORT_C void gpu_startup_(int* ierr)
 {
 
 #if defined DEBUG || defined DEBUGTIME
@@ -58,7 +58,7 @@ extern "C" void gpu_startup_(int* ierr)
 //-----------------------------------------------
 // Initialize the device
 //-----------------------------------------------
-extern "C" void gpu_init_(int* ierr)
+EXPORT_C void gpu_init_(int* ierr)
 {
     
     PRINTDEBUG("BEGIN TO INIT")
@@ -203,7 +203,7 @@ extern "C" void gpu_init_(int* ierr)
     return;
 }
 
-extern "C" void gpu_get_device_info_(int* gpu_dev_count, int* gpu_dev_id,int* gpu_dev_mem,
+EXPORT_C void gpu_get_device_info_(int* gpu_dev_count, int* gpu_dev_id,int* gpu_dev_mem,
                                      int* gpu_num_proc,double* gpu_core_freq,char* gpu_dev_name,int* name_len, int* majorv, int* minorv, int* ierr)
 {
     cudaError_t cuda_error;
@@ -234,7 +234,7 @@ extern "C" void gpu_get_device_info_(int* gpu_dev_count, int* gpu_dev_id,int* gp
 //-----------------------------------------------
 // shutdonw gpu and terminate gpu calculation part
 //-----------------------------------------------
-extern "C" void gpu_shutdown_(int* ierr)
+EXPORT_C void gpu_shutdown_(int* ierr)
 {
     PRINTDEBUG("BEGIN TO SHUTDOWN")
 
@@ -253,7 +253,7 @@ extern "C" void gpu_shutdown_(int* ierr)
 //-----------------------------------------------
 //  Setup up basic infomation of the system
 //-----------------------------------------------
-extern "C" void gpu_setup_(int* natom, int* nbasis, int* nElec, int* imult, int* molchg, int* iAtomType)
+EXPORT_C void gpu_setup_(int* natom, int* nbasis, int* nElec, int* imult, int* molchg, int* iAtomType)
 {
     
 #ifdef DEBUG
@@ -312,7 +312,7 @@ extern "C" void gpu_setup_(int* natom, int* nbasis, int* nElec, int* imult, int*
 //-----------------------------------------------
 //  upload method and hybrid coefficient
 //-----------------------------------------------
-extern "C" void gpu_upload_method_(int* quick_method, bool* is_oshell, double* hyb_coeff)
+EXPORT_C void gpu_upload_method_(int* quick_method, bool* is_oshell, double* hyb_coeff)
 {
     if (*quick_method == 0) {
         gpu -> gpu_sim.method = HF;
@@ -335,7 +335,7 @@ extern "C" void gpu_upload_method_(int* quick_method, bool* is_oshell, double* h
 //-----------------------------------------------
 //  upload libxc information
 //-----------------------------------------------
-extern "C" void gpu_upload_libxc_(int* nof_functionals, int* functional_id, int* xc_polarization, int *ierr)
+EXPORT_C void gpu_upload_libxc_(int* nof_functionals, int* functional_id, int* xc_polarization, int *ierr)
 {
 
     int nof_aux_functionals = *nof_functionals;
@@ -353,7 +353,7 @@ extern "C" void gpu_upload_libxc_(int* nof_functionals, int* functional_id, int*
 //-----------------------------------------------
 //  upload coordinates
 //-----------------------------------------------
-extern "C" void gpu_upload_xyz_(QUICKDouble* atom_xyz)
+EXPORT_C void gpu_upload_xyz_(QUICKDouble* atom_xyz)
 {
 #ifdef DEBUG
     cudaEvent_t start,end;
@@ -404,7 +404,7 @@ extern "C" void gpu_upload_xyz_(QUICKDouble* atom_xyz)
 //-----------------------------------------------
 //  upload molecule infomation
 //-----------------------------------------------
-extern "C" void gpu_upload_atom_and_chg_(int* atom, QUICKDouble* atom_chg)
+EXPORT_C void gpu_upload_atom_and_chg_(int* atom, QUICKDouble* atom_chg)
 {
     
     PRINTDEBUG("BEGIN TO UPLOAD ATOM AND CHARGE")
@@ -427,7 +427,7 @@ extern "C" void gpu_upload_atom_and_chg_(int* atom, QUICKDouble* atom_chg)
 //  upload cutoff criteria, will update every
 //  interation
 //-----------------------------------------------
-extern "C" void gpu_upload_cutoff_(QUICKDouble* cutMatrix, QUICKDouble* integralCutoff,QUICKDouble* primLimit, QUICKDouble* DMCutoff)
+EXPORT_C void gpu_upload_cutoff_(QUICKDouble* cutMatrix, QUICKDouble* integralCutoff,QUICKDouble* primLimit, QUICKDouble* DMCutoff)
 {
     
 #ifdef DEBUG
@@ -472,7 +472,7 @@ extern "C" void gpu_upload_cutoff_(QUICKDouble* cutMatrix, QUICKDouble* integral
 //  upload cutoff matrix, only update at first
 //  interation
 //-----------------------------------------------
-extern "C" void gpu_upload_cutoff_matrix_(QUICKDouble* YCutoff,QUICKDouble* cutPrim)
+EXPORT_C void gpu_upload_cutoff_matrix_(QUICKDouble* YCutoff,QUICKDouble* cutPrim)
 {
 
 #ifdef DEBUG
@@ -1115,7 +1115,7 @@ extern "C" void gpu_upload_cutoff_matrix_(QUICKDouble* YCutoff,QUICKDouble* cutP
 //-----------------------------------------------
 //  upload calculated information
 //-----------------------------------------------
-extern "C" void gpu_upload_calculated_(QUICKDouble* o, QUICKDouble* co, QUICKDouble* vec, QUICKDouble* dense)
+EXPORT_C void gpu_upload_calculated_(QUICKDouble* o, QUICKDouble* co, QUICKDouble* vec, QUICKDouble* dense)
 {
     
 #ifdef DEBUG
@@ -1180,7 +1180,7 @@ extern "C" void gpu_upload_calculated_(QUICKDouble* o, QUICKDouble* co, QUICKDou
 //  upload calculated information for uscf
 //-----------------------------------------------
 
-extern "C" void gpu_upload_calculated_beta_(QUICKDouble* ob, QUICKDouble* denseb)
+EXPORT_C void gpu_upload_calculated_beta_(QUICKDouble* ob, QUICKDouble* denseb)
 {
 
 #ifdef DEBUG
@@ -1241,7 +1241,7 @@ extern "C" void gpu_upload_calculated_beta_(QUICKDouble* ob, QUICKDouble* denseb
 
 // Added by Madu Manathunga on 01/07/2020
 //This method uploads density matrix onto gpu for XC gradient calculation
-extern "C" void gpu_upload_density_matrix_(QUICKDouble* dense)
+EXPORT_C void gpu_upload_density_matrix_(QUICKDouble* dense)
 {
     gpu -> gpu_calculated -> dense    =   new cuda_buffer_type<QUICKDouble>(dense,  gpu->nbasis, gpu->nbasis);
     gpu -> gpu_calculated -> dense    -> Upload();
@@ -1251,7 +1251,7 @@ extern "C" void gpu_upload_density_matrix_(QUICKDouble* dense)
 //-----------------------------------------------
 //  upload basis set information
 //-----------------------------------------------
-extern "C" void gpu_upload_basis_(int* nshell, int* nprim, int* jshell, int* jbasis, int* maxcontract, \
+EXPORT_C void gpu_upload_basis_(int* nshell, int* nprim, int* jshell, int* jbasis, int* maxcontract, \
                                   int* ncontract, int* itype,     QUICKDouble* aexp,      QUICKDouble* dcoeff,\
                                   int* first_basis_function, int* last_basis_function, int* first_shell_basis_function, int* last_shell_basis_function, \
                                   int* ncenter,   int* kstart,    int* katom,     int* ktype,     int* kprim,  int* kshell, int* Ksumtype, \
@@ -1609,7 +1609,7 @@ extern "C" void gpu_upload_basis_(int* nshell, int* nprim, int* jshell, int* jba
 }
 
 
-extern "C" void gpu_upload_grad_(QUICKDouble* gradCutoff)
+EXPORT_C void gpu_upload_grad_(QUICKDouble* gradCutoff)
 {
     
 #ifdef DEBUG
@@ -1649,7 +1649,7 @@ extern "C" void gpu_upload_grad_(QUICKDouble* gradCutoff)
 
 
 //Computes grid weights before grid point packing
-extern "C" void gpu_get_ssw_(QUICKDouble *gridx, QUICKDouble *gridy, QUICKDouble *gridz, QUICKDouble *wtang, QUICKDouble *rwt, QUICKDouble *rad3, QUICKDouble *sswt, QUICKDouble *weight, int *gatm, int *count){
+EXPORT_C void gpu_get_ssw_(QUICKDouble *gridx, QUICKDouble *gridy, QUICKDouble *gridz, QUICKDouble *wtang, QUICKDouble *rwt, QUICKDouble *rad3, QUICKDouble *sswt, QUICKDouble *weight, int *gatm, int *count){
 
 	PRINTDEBUG("BEGIN TO COMPUTE SSW")
 
@@ -1762,7 +1762,7 @@ void prune_grid_sswgrad(){
                 }
         }
 
-	gpu_delete_dft_grid_();
+	gpu_delete_dft_grid();
 
 #ifdef CUDA_MPIV
         cudaEvent_t t_start, t_end;
@@ -2037,7 +2037,7 @@ void print_uploaded_dft_info(){
 }
 #endif
 
-extern "C" void gpu_upload_dft_grid_(QUICKDouble *gridxb, QUICKDouble *gridyb, QUICKDouble *gridzb, QUICKDouble *gridb_sswt, QUICKDouble *gridb_weight, int *gridb_atm, int *bin_locator, int *basf, int *primf, int *basf_counter, int *primf_counter, int *bin_counter,int *gridb_count, int *nbins, int *nbtotbf, int *nbtotpf, int *isg, QUICKDouble *sigrad2, QUICKDouble *DMCutoff){
+EXPORT_C void gpu_upload_dft_grid_(QUICKDouble *gridxb, QUICKDouble *gridyb, QUICKDouble *gridzb, QUICKDouble *gridb_sswt, QUICKDouble *gridb_weight, int *gridb_atm, int *bin_locator, int *basf, int *primf, int *basf_counter, int *primf_counter, int *bin_counter,int *gridb_count, int *nbins, int *nbtotbf, int *nbtotpf, int *isg, QUICKDouble *sigrad2, QUICKDouble *DMCutoff){
 
 	PRINTDEBUG("BEGIN TO UPLOAD DFT GRID")
 
@@ -2177,7 +2177,7 @@ extern "C" void gpu_upload_dft_grid_(QUICKDouble *gridxb, QUICKDouble *gridyb, Q
 //-----------------------------------------------
 // Reupload dft data
 //-----------------------------------------------
-extern "C" void gpu_reupload_dft_grid_(){
+EXPORT_C void gpu_reupload_dft_grid_(){
 
         PRINTDEBUG("BEGIN TO UPLOAD DFT GRID")
 
@@ -2261,7 +2261,7 @@ extern "C" void gpu_reupload_dft_grid_(){
 //-----------------------------------------------
 // Delete dft device data
 //-----------------------------------------------
-extern "C" void gpu_delete_dft_dev_grid_(){
+EXPORT_C void gpu_delete_dft_dev_grid(){
 
         PRINTDEBUG("DEALLOCATING DFT GRID")
 
@@ -2295,7 +2295,7 @@ extern "C" void gpu_delete_dft_dev_grid_(){
 }
 
 
-extern "C" void gpu_delete_dft_grid_(){
+EXPORT_C void gpu_delete_dft_grid(){
 
         PRINTDEBUG("DEALLOCATING DFT GRID")
 
@@ -2350,7 +2350,7 @@ void gpu_delete_sswgrad_vars(){
 }
 
 
-extern "C" void gpu_cleanup_(){
+EXPORT_C void gpu_cleanup_(){
     SAFE_DELETE(gpu->gpu_basis->ncontract);
     SAFE_DELETE(gpu->gpu_basis->itype);
     SAFE_DELETE(gpu->gpu_basis->aexp);
@@ -2392,7 +2392,7 @@ static bool incoreInt = true;
 static ERI_entry* intERIEntry;
 static int totalBuffer;
 
-extern "C" void gpu_addint_(QUICKDouble* o, int* intindex, char* intFileName){
+EXPORT_C void gpu_addint_(QUICKDouble* o, int* intindex, char* intFileName){
     
 #ifdef DEBUG
     cudaEvent_t start,end;
@@ -2659,7 +2659,7 @@ char *trim(char *s) {
 }
 
 
-extern "C" void gpu_aoint_(QUICKDouble* leastIntegralCutoff, QUICKDouble* maxIntegralCutoff, int* intNum, char* intFileName)
+EXPORT_C void gpu_aoint_(QUICKDouble* leastIntegralCutoff, QUICKDouble* maxIntegralCutoff, int* intNum, char* intFileName)
 {
     PRINTDEBUG("BEGIN TO RUN AOINT")
     
@@ -3114,7 +3114,7 @@ void delete_pteval(bool devOnly){
 //-----------------------------------------------
 //  delete libxc information
 //-----------------------------------------------
-extern "C" void gpu_delete_libxc_(int *ierr)
+EXPORT_C void gpu_delete_libxc_(int *ierr)
 {
     libxc_cleanup(gpu -> gpu_sim.glinfo, gpu -> gpu_sim.nauxfunc);
 }

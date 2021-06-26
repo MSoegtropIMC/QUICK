@@ -22,13 +22,34 @@
 
 #define CUDA_MPIV_MINBASIS 100
 
-#include "string.h"
+#include <string.h>
+
+// Variable size allocations on the stack
+#ifdef _MSC_VER
+#include <malloc.h>
+// For one dimensional arrays
+#define _ALLOCA(type, var, size) type *var = (type*) _alloca(sizeof(type) * (size))
+// For two dimensional arrays, where the second size is constant
+#define _ALLOCA2C(type, var, s1, s2c) type (*var)[s2c] = (type (*)[s2c]) _alloca(sizeof(type) * (s1) * (s2c))
+#else
+#define _ALLOCA(type, var, size) type var[size]
+#define _ALLOCA2C(type, var, s1,s2c) type var[s1][s2c]
+#endif
+
+// DLL export
+#ifndef EXPORT_C
+#ifdef _MSC_VER
+#define EXPORT_C extern "C" __declspec(dllexport)
+#else
+#define EXPORT_C extern "C"
+#endif
+#endif
 
 //-----------------------------------------------
 // Query the availability of devices.
 //-----------------------------------------------
 
-extern "C" void mgpu_query_(int* mpisize, int *mpirank, int *mgpu_id, int* ierr)
+EXPORT_C void mgpu_query_(int* mpisize, int *mpirank, int *mgpu_id, int* ierr)
 {
 
     int gpuCount = 0;           // Total number of cuda devices available
@@ -100,7 +121,7 @@ void mgpu_startup(int mpirank, int* ierr)
 //-----------------------------------------------
 // Finalize the devices
 //-----------------------------------------------
-extern "C" void mgpu_shutdown_(int* ierr)
+EXPORT_C void mgpu_shutdown_(int* ierr)
 {
 
     PRINTDEBUG("BEGIN TO SHUTDOWN DEVICES")
@@ -119,7 +140,7 @@ extern "C" void mgpu_shutdown_(int* ierr)
 //-----------------------------------------------
 // Initialize the devices
 //-----------------------------------------------
-extern "C" void mgpu_init_(int *mpirank, int *mpisize, int *device, int* ierr)
+EXPORT_C void mgpu_init_(int *mpirank, int *mpisize, int *device, int* ierr)
 {
 
     cudaError_t status;
@@ -188,10 +209,10 @@ extern "C" void mgpu_init_(int *mpirank, int *mpisize, int *device, int* ierr)
 void mgpu_eri_greedy_distribute(){
 
     // Total number of items to distribute
-    int nitems=gpu->gpu_cutoff->sqrQshell;
+    const int nitems=gpu->gpu_cutoff->sqrQshell;
 
     // Array to store total number of items each core would have
-    int tot_pcore[gpu->mpisize];
+    _ALLOCA(int, tot_pcore, gpu->mpisize);
 
 #ifdef DEBUG
     // Save shell indices for each core
@@ -206,14 +227,14 @@ void mgpu_eri_greedy_distribute(){
 
     // Save a set of flags unique to each core, these will be uploaded
     // to GPU by responsible cores
-    char mpi_flags[gpu->mpisize][nitems];
+    _ALLOCA(char, mpi_flags, gpu->mpisize*nitems);
 
     // Keep track of total primitive value of each core
-    int tot_pval[gpu->mpisize];
+    _ALLOCA(int, tot_pval, gpu->mpisize);
 
     // Keep track of how many shell types each core has
     // ss, sp, sd, ps, pp, pd, dd, dp, dd
-    int qtype_pcore[gpu->mpisize][16];
+    _ALLOCA2C(int, qtype_pcore, gpu->mpisize, 16);
 
     //set arrays to zero
     memset(tot_pcore,0, sizeof(int)*gpu->mpisize);
@@ -268,7 +289,7 @@ void mgpu_eri_greedy_distribute(){
                         tot_pval[min_core] += psum;
  
                         // Save the flag
-                        mpi_flags[min_core][i] = 1;
+                        mpi_flags[min_core*nitems+i] = 1;
  
                         // Store shell types for debugging
                         qtype_pcore[min_core][a] +=1;
@@ -304,7 +325,7 @@ void mgpu_eri_greedy_distribute(){
 
     }else{
         // set all flags of master to true if nitems is less than minimum amount
-        memset(&mpi_flags[0][0],1,sizeof(char)*nitems);  
+        memset(&mpi_flags[0*nitems+0],1,sizeof(char)*nitems);  
     }
 
 #ifdef DEBUG
@@ -329,7 +350,7 @@ void mgpu_eri_greedy_distribute(){
     // Upload the flags to GPU
     gpu -> gpu_basis -> mpi_bcompute = new cuda_buffer_type<char>(nitems);
 
-    memcpy(gpu -> gpu_basis -> mpi_bcompute -> _hostData, &mpi_flags[gpu->mpirank][0], sizeof(char)*nitems);
+    memcpy(gpu -> gpu_basis -> mpi_bcompute -> _hostData, &mpi_flags[gpu->mpirank*nitems+0], sizeof(char)*nitems);
 
     gpu -> gpu_basis -> mpi_bcompute -> Upload();
     gpu -> gpu_sim.mpi_bcompute  = gpu -> gpu_basis -> mpi_bcompute  -> _devData;
@@ -444,23 +465,23 @@ void mgpu_xc_tpbased_greedy_distribute(){
     PRINTDEBUG("BEGIN TO DISTRIBUTE XC GRID POINTS")
 
     // due to grid point packing, npoints is always a multiple of bin_size
-    int nbins    = gpu -> gpu_xcq -> nbins;
+    const int nbins    = gpu -> gpu_xcq -> nbins;
 
 #ifdef DEBUG
     fprintf(gpu->debugFile,"GPU: %i nbins= %i \n", gpu->mpirank, nbins);
 #endif
 
     // array to keep track of how many true grid points per bin
-    int2 tpoints[nbins];
+    _ALLOCA(int2, tpoints, nbins);
 
     // save a set of flags to indicate if a given node should work on a particular bin
-    char mpi_xcflags[gpu->mpisize][nbins];
+    _ALLOCA(char, mpi_xcflags, gpu->mpisize*nbins);
 
     // array to keep track of how many bins per gpu
-    int bins_pcore[gpu->mpisize];
+    _ALLOCA(int, bins_pcore, gpu->mpisize);
 
     // array to keep track of how many true grid points per core
-    int tpts_pcore[gpu->mpisize];
+    _ALLOCA(int, tpts_pcore, gpu->mpisize);
 
     // initialize all arrays to zero
     //memset(tpoints,0, sizeof(int)*nbins);
@@ -520,7 +541,7 @@ void mgpu_xc_tpbased_greedy_distribute(){
         tpts_pcore[mincore] += tpoints[i].y;
 
         // assign the bin to corresponding core
-        mpi_xcflags[mincore][tpoints[i].x] = 1;
+        mpi_xcflags[mincore*nbins+tpoints[i].x] = 1;
 
     }
 
@@ -538,7 +559,7 @@ void mgpu_xc_tpbased_greedy_distribute(){
     // upload flags to gpu
     gpu -> gpu_xcq -> mpi_bxccompute = new cuda_buffer_type<char>(nbins);
 
-    memcpy(gpu -> gpu_xcq -> mpi_bxccompute -> _hostData, &mpi_xcflags[gpu->mpirank][0], sizeof(char)*nbins);
+    memcpy(gpu -> gpu_xcq -> mpi_bxccompute -> _hostData, &mpi_xcflags[gpu->mpirank*nbins+0], sizeof(char)*nbins);
 
     gpu -> gpu_xcq -> mpi_bxccompute -> DeleteGPU();
 
@@ -556,35 +577,35 @@ void mgpu_xc_pbased_greedy_distribute(){
     PRINTDEBUG("BEGIN TO DISTRIBUTE XC GRID POINTS")
 
     // due to grid point packing, npoints is always a multiple of bin_size
-    int nbins    = gpu -> gpu_xcq -> nbins;
+    const int nbins    = gpu -> gpu_xcq -> nbins;
 
 #ifdef DEBUG
     fprintf(gpu->debugFile,"GPU: %i nbins= %i \n", gpu->mpirank, nbins);
 #endif
 
     // array to keep track of how many true grid points per bin
-    int tpoints[nbins];
+    _ALLOCA(int, tpoints, nbins);
 
     // array to keep track of how many primitive functions per bin
-    int primfpb[nbins];
+    _ALLOCA(int, primfpb, nbins);
 
     // array to keep track of true grid point primitive function product per bin
-    int2 ptpf_pb[nbins];
+    _ALLOCA(int2, ptpf_pb, nbins);
 
     // save a set of flags to indicate if a given node should work on a particular bin
-    char mpi_xcflags[gpu->mpisize][nbins];
+    _ALLOCA(char, mpi_xcflags, gpu->mpisize*nbins);
 
     // array to keep track of how many bins per gpu
-    int bins_pcore[gpu->mpisize];
+    _ALLOCA(int, bins_pcore, gpu->mpisize);
 
     // array to keep track of how many true grid points per gpu
-    int tpts_pcore[gpu->mpisize];
+    _ALLOCA(int, tpts_pcore, gpu->mpisize);
 
     // array to keep track of how many primitive functions per gpu
-    int primf_pcore[gpu->mpisize];
+    _ALLOCA(int, primf_pcore, gpu->mpisize);
 
     // array to keep track of the true grid point primf product per gpu
-    int ptpf_pcore[gpu->mpisize];
+    _ALLOCA(int, ptpf_pcore, gpu->mpisize);
 
    // initialize all arrays to zero
     memset(tpoints,0, sizeof(int)*nbins);
@@ -662,7 +683,7 @@ void mgpu_xc_pbased_greedy_distribute(){
         tpts_pcore[mincore] += tpoints[ptpf_pb[i].x];
 
         // assign the bin to corresponding core
-        mpi_xcflags[mincore][ptpf_pb[i].x] = 1;
+        mpi_xcflags[mincore*nbins+ptpf_pb[i].x] = 1;
     }
 
 //#ifdef DEBUG
@@ -680,7 +701,7 @@ void mgpu_xc_pbased_greedy_distribute(){
     // upload flags to gpu
     gpu -> gpu_xcq -> mpi_bxccompute = new cuda_buffer_type<char>(nbins);
 
-    memcpy(gpu -> gpu_xcq -> mpi_bxccompute -> _hostData, &mpi_xcflags[gpu->mpirank][0], sizeof(char)*nbins);
+    memcpy(gpu -> gpu_xcq -> mpi_bxccompute -> _hostData, &mpi_xcflags[gpu->mpirank*nbins+0], sizeof(char)*nbins);
 
     gpu -> gpu_xcq -> mpi_bxccompute -> DeleteGPU();
 
@@ -701,7 +722,7 @@ for(int i = 0; i < gpu -> gpu_xcq -> nbins; i++){
 }
 
 // array to keep track of how many true grid points per bin
-int tpoints[gpu -> gpu_xcq -> nbins];
+_ALLOCA(int, tpoints, gpu -> gpu_xcq -> nbins);
 
 // count how many true grid point in each bin and store in tpoints
 int ntot_tpts=0;
@@ -924,7 +945,7 @@ SAFE_DELETE(mgpu_xcq -> bin_locator);
 // Methods passing gpu information to f90 side for printing
 //--------------------------------------------------------
 
-extern "C" void mgpu_get_device_info_(int* dev_id,int* gpu_dev_mem,
+EXPORT_C void mgpu_get_device_info_(int* dev_id,int* gpu_dev_mem,
                                      int* gpu_num_proc,double* gpu_core_freq,char* gpu_dev_name,int* name_len, int* majorv, int* minorv)
 {
     cudaDeviceProp prop;
@@ -945,19 +966,19 @@ extern "C" void mgpu_get_device_info_(int* dev_id,int* gpu_dev_mem,
 //--------------------------------------------------------
 // Send times for printing
 //--------------------------------------------------------
-extern "C" void mgpu_get_2elb_time_(double* t_2elb){
+EXPORT_C void mgpu_get_2elb_time_(double* t_2elb){
 
   *t_2elb = gpu -> timer -> t_2elb;
 
 }
 
-extern "C" void mgpu_get_xclb_time_(double *t_xclb){
+EXPORT_C void mgpu_get_xclb_time_(double *t_xclb){
 
   *t_xclb = gpu -> timer -> t_xclb;
 
 }
 
-extern "C" void mgpu_get_xcrb_time_(double* t_xcrb, double* t_xcpg){
+EXPORT_C void mgpu_get_xcrb_time_(double* t_xcrb, double* t_xcpg){
 
   *t_xcrb = gpu -> timer -> t_xcrb;
   *t_xcpg = gpu -> timer -> t_xcpg;

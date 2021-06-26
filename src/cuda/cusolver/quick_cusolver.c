@@ -45,7 +45,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
-#if defined(__GNUC__) || defined (__PGIC__)
+#if defined(__GNUC__) || defined (__PGIC__) || defined (_MSC_VER)
 #include <stdint.h>
 #include <assert.h>
 #endif /* __GNUC__ */
