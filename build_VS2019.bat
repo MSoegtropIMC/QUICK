@@ -19,12 +19,17 @@ SET CXX=cl
 SET FC=ifort
 
 cmake .. -G Ninja -DCOMPILER=MANUAL ^
+    -DCUDA_NVCC_FLAGS="--ptxas-options=-O0" ^
     -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE ^
     -DMPI=TRUE -DCUDA=TRUE -DQUICK_USER_ARCH=turing -DMKL_STATIC=TRUE ^
     -DOpenMP_MKL_EXTRA_LIBRARIES=libiomp5md ^
-    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_14_VS2019_STATIC.log
+    --trace --log-level=TRACE --debug-find --debug-trycompile 2> ../../LOG_14_VS2019_nvccO0.log
 
-C:\bin\ninja\ninja.exe
+REM C:\bin\ninja\ninja.exe -k 0
+
+REM This has an effect, but teh effect is that it does not configure any more
+REM     -DCUDA_NVCC_FLAGS="--ptxas-options=-O0" ^
+
 
 GOTO :EOF
 
