@@ -139,9 +139,9 @@ if(CUDA)
 
     # optimization level
     if(OPTIMIZE)
-        list(APPEND CUDA_NVCC_FLAGS -O2)
+        list(APPEND CUDA_NVCC_FLAGS -O2 --ptxas-options=-O2)
     else()
-        list(APPEND CUDA_NVCC_FLAGS -O0)
+        list(APPEND CUDA_NVCC_FLAGS -O0 --ptxas-options=-O0)
     endif()
 
     # debug flags
