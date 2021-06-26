@@ -31,6 +31,8 @@ module quick_basis_module
    !                6 for carbon, etc. natom and nbasis are the number of atoms and
    !                basis functions. ibasis denotes the basis set chosen for.
    !------------------------------------------------------------------------
+   
+   !DEC$ ATTRIBUTES DLLEXPORT :: cutprim, Ycutoff, jshell, nshell, nprim, jbasis, dcoeff, itype, aexp, ncontract, maxcontract, quick_basis, nbasis
 
    use quick_gaussian_class_module
    implicit none

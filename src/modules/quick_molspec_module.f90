@@ -17,7 +17,7 @@
 ! molecule specification Module
 module quick_molspec_module
 
-    !DEC$ ATTRIBUTES DLLEXPORT :: quick_molspec
+    !DEC$ ATTRIBUTES DLLEXPORT :: quick_molspec, xyz, natom
 
    implicit none
 
